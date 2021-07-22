@@ -50,7 +50,7 @@ namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
 
                 var subtasksCreator = new JiraSubtasksCreator(jiraClient);
 
-                // subtasksCreator.CreateSubtasks(correctTasks);
+                subtasksCreator.CreateSubtasks(correctTasks);
                 using (StreamWriter sw = new StreamWriter($"{Directory.GetCurrentDirectory()}/IssuesWithoutPU.txt"))
                 {
                     sw.WriteLine("Please set the PU for these tasks:");
