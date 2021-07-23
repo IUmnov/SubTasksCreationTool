@@ -7,8 +7,13 @@
 <ItemGroup>
   <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.10" />
   <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.9" />
+  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   <PackageReference Include="NLog.Extended" Version="4.0.0.1" />
-  <PackageReference Include="OneInc.ProcessOne.Libs.JiraClient" Version="1.0.4" />
+    <PackageReference Include="OneInc.Common.Extensions" Version="1.0.6" />
+    <PackageReference Include="OneInc.ProcessOne.Libs.WebApiExtensions" Version="1.0.34" />
+    <PackageReference Include="OneInc.ProcessOne.Libs.JiraClient" Version="1.0.8" />
+    <PackageReference Include="OneInc.ProcessOne.Libs.CommonHelpers" Version="1.3.8" />
+    <PackageReference Include="OneInc.ProcessOne.Libs.Composition" Version="1.0.1" />
   <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
 </ItemGroup>
 <ItemGroup>
@@ -19,7 +24,9 @@
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </None>
 </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\OneInc.PortalOne.Utils.Common\OneInc.PortalOne.Utils.Common.csproj" />
-    </ItemGroup>
+<!--    <ItemGroup>
+        <Reference Include="JiraClient">
+            <HintPath>..\..\..\..\..\..\Repository\ProcessOne.Libs\OneInc.ProcessOne.Libs.JiraClient\Lib\OneInc.ProcessOne.Libs.JiraClient.dll</HintPath>
+        </Reference>
+    </ItemGroup>-->
 </Project>

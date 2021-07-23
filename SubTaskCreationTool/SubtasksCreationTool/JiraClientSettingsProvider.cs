@@ -1,7 +1,6 @@
-﻿using OneInc.ProcessOne.Libs.JiraClient;
-using IJiraClientSettingsProvider = OneInc.ProcessOne.Libs.JiraClient.IJiraClientSettingsProvider;
+﻿using IJiraClientSettingsProvider = OneInc.ProcessOne.Libs.JiraClient.IJiraClientSettingsProvider;
 
-namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
+namespace SubtasksCreationTool
 {
     public class JiraClientSettingsProvider : IJiraClientSettingsProvider
     {
