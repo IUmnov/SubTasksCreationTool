@@ -47,11 +47,6 @@ namespace SubtasksCreationTool
 
                 var issuesHandler = new JiraIssuesHandler(jiraClient);
 
-                foreach (var task in correctTasks)
-                {
-                    Console.WriteLine(task.Key);
-                }
-
                 await issuesHandler.CreateSubtasks(correctTasks);
 
                 using (StreamWriter sw = new StreamWriter($"{Directory.GetCurrentDirectory()}/{TroubleIssuesFileName}"))
