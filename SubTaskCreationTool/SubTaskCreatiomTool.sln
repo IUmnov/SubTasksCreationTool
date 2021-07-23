@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubtasksCreationTool", "SubtasksCreationTool\SubtasksCreationTool.csproj", "{FD3B8831-1612-4D7B-A3CB-84F57A30BCA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubTaskCreationToolTests", "SubTaskCreationToolTests\SubTaskCreationToolTests.csproj", "{D851BDFA-0C36-43A9-B7DE-2766C3AAD1C6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD3B8831-1612-4D7B-A3CB-84F57A30BCA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD3B8831-1612-4D7B-A3CB-84F57A30BCA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD3B8831-1612-4D7B-A3CB-84F57A30BCA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD3B8831-1612-4D7B-A3CB-84F57A30BCA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D851BDFA-0C36-43A9-B7DE-2766C3AAD1C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D851BDFA-0C36-43A9-B7DE-2766C3AAD1C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D851BDFA-0C36-43A9-B7DE-2766C3AAD1C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D851BDFA-0C36-43A9-B7DE-2766C3AAD1C6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

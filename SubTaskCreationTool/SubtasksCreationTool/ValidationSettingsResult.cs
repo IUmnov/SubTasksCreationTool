@@ -1,6 +1,6 @@
 ﻿using OneInc.ProcessOne.Libs.JiraClient;
 
-namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
+namespace SubtasksCreationTool
 {
     public class ValidationSettingsResult
     {

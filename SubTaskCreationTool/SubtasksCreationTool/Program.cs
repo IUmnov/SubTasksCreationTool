@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Composition.Hosting;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Xml;
-using Microsoft.Extensions.Configuration;
-using OneInc.ProcessOne.Libs.CommonHelpers;
-using OneInc.ProcessOne.Libs.JiraClient;
-using OneInc.ProcessOne.Libs.JiraClient.Models;
-using ConfigurationBuilder = Microsoft.Extensions.Configuration.ConfigurationBuilder;
+using System.Threading.Tasks;
 
-namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
+namespace SubtasksCreationTool
 {
     internal class Program
     {
         private const string TaskUrl = "https://oneinc.atlassian.net/browse/";
+        private const string TroubleIssuesFileName = "TroubleIssues.txt";
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {
@@ -38,7 +31,7 @@ namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
                     throw new Exception("The requested sprint does not exist");
                 }
 
-                var allSprintTasks = jiraClient.GetSprintTasksAsync(sprintId).Result;
+                var allSprintTasks = await jiraClient.GetSprintTasksAsync(sprintId);
 
                 var tasksAndInternalTechTasks = JiraIssuesHepler.SelectTasksAndInternalTechTasks(allSprintTasks);
 
@@ -46,18 +39,37 @@ namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
 
                 var tasksWithNeededPu = tasksAndInternalTechTasks.Except(tasksWithoutNeededPu);
 
+                var needMoreInfoTasks = JiraIssuesHepler.GetTasksNeedMoreInfo(tasksWithNeededPu);
+
                 var correctTasks = JiraIssuesHepler.ExcludeTasksWithSubtasks(tasksWithNeededPu);
 
-                var subtasksCreator = new JiraSubtasksCreator(jiraClient);
+                correctTasks = correctTasks.Except(needMoreInfoTasks);
 
-                subtasksCreator.CreateSubtasks(correctTasks);
-                using (StreamWriter sw = new StreamWriter($"{Directory.GetCurrentDirectory()}/IssuesWithoutPU.txt"))
+                var issuesHandler = new JiraIssuesHandler(jiraClient);
+
+                foreach (var task in correctTasks)
                 {
-                    sw.WriteLine("Please set the PU for these tasks:");
+                    Console.WriteLine(task.Key);
+                }
+
+                await issuesHandler.CreateSubtasks(correctTasks);
+
+                using (StreamWriter sw = new StreamWriter($"{Directory.GetCurrentDirectory()}/{TroubleIssuesFileName}"))
+                {
+                    await sw.WriteLineAsync("Please set the PU for these tasks:");
 
                     foreach (var issue in tasksWithoutNeededPu)
                     {
-                        sw.WriteLine($"{TaskUrl}{issue.Key}");
+                        await sw.WriteLineAsync($"{TaskUrl}{issue.Key}");
+                    }
+
+                    await sw.WriteLineAsync();
+
+                    await sw.WriteLineAsync("These tasks are in the status Need more info:");
+
+                    foreach (var issue in needMoreInfoTasks)
+                    {
+                        await sw.WriteLineAsync($"{TaskUrl}{issue.Key}");
                     }
                 }
 

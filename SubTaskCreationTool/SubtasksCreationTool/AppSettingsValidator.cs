@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using OneInc.ProcessOne.Libs.CommonHelpers;
 using OneInc.ProcessOne.Libs.JiraClient;
 
-namespace OneInc.PortalOne.Utils.Common.SubtasksCreationTool
+namespace SubtasksCreationTool
 {
     public static class AppSettingsValidator
     {
