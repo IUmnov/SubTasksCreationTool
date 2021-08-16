@@ -38,5 +38,11 @@ namespace SubtasksCreationTool
                     || (i.Fields.IssueType.Name == InternalTechnicalTaskType
                         && !i.Fields.Subtasks.Select(s => s.Fields.IssueType.Name).Contains(SubTaskType)));
         }
+        
+        public static IEnumerable<Issue> GetTasksWithQaSubtask(IEnumerable<Issue> issues)
+        {
+            return issues.Where(
+                i => (i.Fields.Subtasks.Select(s => s.Fields.IssueType.Name).Contains(QaSubTaskType)));
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using OneInc.ProcessOne.Libs.JiraClient.Models;
 
 namespace SubtasksCreationTool
 {
@@ -14,7 +15,7 @@ namespace SubtasksCreationTool
         {
             try
             {
-                var validationSettingsResult = AppSettingsValidator.ValidateSettings();
+                var validationSettingsResult = await AppSettingsValidator.ValidateSettings();
 
                 if (!validationSettingsResult.IsValid)
                 {
@@ -23,21 +24,29 @@ namespace SubtasksCreationTool
 
                 var jiraClient = validationSettingsResult.JiraClient;
 
+                await jiraClient.AddCommentAsync("PROC-171256", new Comment { Body = "Ivan Umnov, test comment" });
+
                 Console.Write("Input sprint id: ");
                 int sprintId = Convert.ToInt32(Console.ReadLine());
 
-                if (!jiraClient.IsTheSprintExist(sprintId))
+                if (!await jiraClient.DoesSprintExistAsync(sprintId))
                 {
                     throw new Exception("The requested sprint does not exist");
                 }
 
-                var allSprintTasks = await jiraClient.GetSprintTasksAsync(sprintId);
+                var allSprintTasks = await jiraClient.GetSprintIssuesAsync(sprintId);
 
                 var tasksAndInternalTechTasks = JiraIssuesHepler.SelectTasksAndInternalTechTasks(allSprintTasks);
+                
+                var issuesHandler = new JiraIssuesHandler(jiraClient);
 
                 var tasksWithoutNeededPu = JiraIssuesHepler.GetTasksWithoutNeededPU(tasksAndInternalTechTasks);
 
+                await issuesHandler.SendCommentsAboutAddingPU(tasksWithoutNeededPu);
+
                 var tasksWithNeededPu = tasksAndInternalTechTasks.Except(tasksWithoutNeededPu);
+                
+                await issuesHandler.SendCommentsAboutUpdateRemaining(tasksWithNeededPu);
 
                 var needMoreInfoTasks = JiraIssuesHepler.GetTasksNeedMoreInfo(tasksWithNeededPu);
 
@@ -45,28 +54,9 @@ namespace SubtasksCreationTool
 
                 correctTasks = correctTasks.Except(needMoreInfoTasks);
 
-                var issuesHandler = new JiraIssuesHandler(jiraClient);
+                var correctTasksWithTypeOfSubtasksToCreate = issuesHandler.GetTypeOfSubtasksToCreate(correctTasks);
 
-                await issuesHandler.CreateSubtasks(correctTasks);
-
-                using (StreamWriter sw = new StreamWriter($"{Directory.GetCurrentDirectory()}/{TroubleIssuesFileName}"))
-                {
-                    await sw.WriteLineAsync("Please set the PU for these tasks:");
-
-                    foreach (var issue in tasksWithoutNeededPu)
-                    {
-                        await sw.WriteLineAsync($"{TaskUrl}{issue.Key}");
-                    }
-
-                    await sw.WriteLineAsync();
-
-                    await sw.WriteLineAsync("These tasks are in the status Need more info:");
-
-                    foreach (var issue in needMoreInfoTasks)
-                    {
-                        await sw.WriteLineAsync($"{TaskUrl}{issue.Key}");
-                    }
-                }
+                await issuesHandler.CreateSubtasks(correctTasksWithTypeOfSubtasksToCreate);
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Subtasks were successfully created");

@@ -6,6 +6,6 @@ namespace SubtasksCreationTool
 {
     public interface IJiraIssuesHandler
     {
-        Task CreateSubtasks(IEnumerable<Issue> parentIssues);
+        Task CreateSubtasks(IEnumerable<IssueDto> parentIssues);
     }
 }

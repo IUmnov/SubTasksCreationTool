@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OneInc.ProcessOne.Libs.CommonHelpers;
 using OneInc.ProcessOne.Libs.JiraClient;
@@ -7,7 +8,7 @@ namespace SubtasksCreationTool
 {
     public static class AppSettingsValidator
     {
-        public static ValidationSettingsResult ValidateSettings()
+        public static async Task<ValidationSettingsResult> ValidateSettings()
         {
             var builder = new ConfigurationBuilder().SetBasePath($"{Directory.GetCurrentDirectory()}/Properties")
                 .AddJsonFile("appsettings.json", optional: false);
@@ -28,7 +29,7 @@ namespace SubtasksCreationTool
 
             var jiraClient = jiraClientFactory.Create(new JiraClientSettingsProvider(url, login, apiToken));
 
-            if (!jiraClient.IsTheConnectionEstablished())
+            if (!await jiraClient.IsConnectionEstablishedAsync())
             {
                 return new ValidationSettingsResult
                 {
