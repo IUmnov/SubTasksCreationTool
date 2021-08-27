@@ -21,7 +21,7 @@ namespace SubtasksCreationTool
         private const int TechnicalAnalysisReviewId = 21;
         private readonly Customer[] NaCustomer = new Customer[] {new Customer {Id = "15500", Value = "N/A"}};
 
-        private const int HoursInPu = 6;
+        private const int HoursInPu = 8;
 
         private readonly IJiraClient _jiraClient;
 
