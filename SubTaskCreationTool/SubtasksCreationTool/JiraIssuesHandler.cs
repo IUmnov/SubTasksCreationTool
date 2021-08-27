@@ -11,6 +11,7 @@ namespace SubtasksCreationTool
     {
         private const string TaskType = "Task";
         private const string InternalTechnicalTaskType = "Internal Technical Task";
+        private const string StoryType = "Story";
         private const string OpenStatus = "Open";
         private const string TechAnalysisReviewStatus = "Technical Analysis Review";
         private const string QaSubTaskType = "QA Sub-task";

@@ -9,12 +9,13 @@ namespace SubtasksCreationTool
         private const string TaskType = "Task";
         private const string NeedMoreInfoStatus = "Need more info";
         private const string InternalTechnicalTaskType = "Internal Technical Task";
+        private const string StoryType = "Story";
         private const string QaSubTaskType = "QA Sub-task";
         private const string SubTaskType = "Sub-task";
 
-        public static IEnumerable<Issue> SelectTasksAndInternalTechTasks(IEnumerable<Issue> issues)
+        public static IEnumerable<Issue> SelectTasksStoriesAndInternalTechTasks(IEnumerable<Issue> issues)
         {
-            return issues.Where(i => i.Fields.IssueType.Name == TaskType || i.Fields.IssueType.Name == InternalTechnicalTaskType);
+            return issues.Where(i => i.Fields.IssueType.Name == TaskType || i.Fields.IssueType.Name == InternalTechnicalTaskType || i.Fields.IssueType.Name == StoryType);
         }
 
         public static IEnumerable<Issue> GetTasksWithoutNeededPU(IEnumerable<Issue> issues)
