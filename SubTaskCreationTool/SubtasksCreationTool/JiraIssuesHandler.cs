@@ -25,7 +25,7 @@ namespace SubtasksCreationTool
         private readonly IJiraClient _jiraClient;
         
         private JiraUser IlyaShalin = new JiraUser()
-            {Id = "60d558a5dae56700681208f6", Name = "Ivan Umnov"};
+            {Id = "557058:1dc64da9-9977-495c-a7f9-40e7f82b7266", Name = "Ilya Shalin"};
         
         private Dictionary<RequestType, string> _requests = new Dictionary<RequestType, string>()
         {
