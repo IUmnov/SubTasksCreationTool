@@ -37,7 +37,7 @@ namespace SubtasksCreationTool
 
                 Console.WriteLine("Filtering internal technical and simple tasks...");
 
-                var tasksAndInternalTechTasks = JiraIssuesHepler.SelectTasksAndInternalTechTasks(allSprintTasks);
+                var tasksAndInternalTechTasks = JiraIssuesHepler.SelectTasksStoriesAndInternalTechTasks(allSprintTasks);
 
                 var issuesHandler = new JiraIssuesHandler(jiraClient);
 
