@@ -50,8 +50,6 @@ namespace SubtasksCreationTool
                 var issue = issueDto.Issue;
                 var typeOfSubtasksToCreate = issueDto.TypeOfSubtasksToCreate;
 
-                await ResetTheIssueOriginalEstimate(issue);
-
                 if (typeOfSubtasksToCreate.Count == 0)
                 {
                     continue;
