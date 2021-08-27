@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using OneInc.ProcessOne.Libs.JiraClient.Models;
 
@@ -8,9 +10,6 @@ namespace SubtasksCreationTool
 {
     internal class Program
     {
-        private const string TaskUrl = "https://oneinc.atlassian.net/browse/";
-        private const string TroubleIssuesFileName = "TroubleIssues.txt";
-
         public static async Task Main(string[] args)
         {
             try
@@ -24,8 +23,6 @@ namespace SubtasksCreationTool
 
                 var jiraClient = validationSettingsResult.JiraClient;
 
-                await jiraClient.AddCommentAsync("PROC-171256", new Comment { Body = "Ivan Umnov, test comment" });
-
                 Console.Write("Input sprint id: ");
                 int sprintId = Convert.ToInt32(Console.ReadLine());
 
@@ -34,19 +31,33 @@ namespace SubtasksCreationTool
                     throw new Exception("The requested sprint does not exist");
                 }
 
+                Console.WriteLine("Get info about sprint tasks...");
+
                 var allSprintTasks = await jiraClient.GetSprintIssuesAsync(sprintId);
 
+                Console.WriteLine("Filtering internal technical and simple tasks...");
+
                 var tasksAndInternalTechTasks = JiraIssuesHepler.SelectTasksAndInternalTechTasks(allSprintTasks);
-                
+
                 var issuesHandler = new JiraIssuesHandler(jiraClient);
 
+                Console.WriteLine("Filtering tasks without needed PU...");
+
                 var tasksWithoutNeededPu = JiraIssuesHepler.GetTasksWithoutNeededPU(tasksAndInternalTechTasks);
+
+                Console.WriteLine("Sending messages about adding PU...");
 
                 await issuesHandler.SendCommentsAboutAddingPU(tasksWithoutNeededPu);
 
                 var tasksWithNeededPu = tasksAndInternalTechTasks.Except(tasksWithoutNeededPu);
-                
-                await issuesHandler.SendCommentsAboutUpdateRemaining(tasksWithNeededPu);
+
+                Console.WriteLine("Loading full information about subtasks...");
+
+                issuesHandler.GetFullInfoAboutSubtasks(tasksWithNeededPu);
+
+                Console.WriteLine("Sending messages about updating PU and estimates...");
+
+                await issuesHandler.SendCommentsAboutUpdateEstimates(tasksWithNeededPu);
 
                 var needMoreInfoTasks = JiraIssuesHepler.GetTasksNeedMoreInfo(tasksWithNeededPu);
 
@@ -56,14 +67,17 @@ namespace SubtasksCreationTool
 
                 var correctTasksWithTypeOfSubtasksToCreate = issuesHandler.GetTypeOfSubtasksToCreate(correctTasks);
 
+                Console.WriteLine("Creating subtasks...");
+
                 await issuesHandler.CreateSubtasks(correctTasksWithTypeOfSubtasksToCreate);
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Subtasks were successfully created");
+                Console.WriteLine("Subtasks were successfully created!");
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
+
                 Console.WriteLine(ex.Message);
             }
         }
