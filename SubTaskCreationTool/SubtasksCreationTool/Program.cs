@@ -47,9 +47,13 @@ namespace SubtasksCreationTool
 
                 Console.WriteLine("Sending messages about adding PU...");
 
-                await issuesHandler.SendCommentsAboutAddingPU(tasksWithoutNeededPu);
+                // await issuesHandler.SendCommentsAboutAddingPU(tasksWithoutNeededPu);
 
                 var tasksWithNeededPu = tasksAndInternalTechTasks.Except(tasksWithoutNeededPu);
+                
+                var needMoreInfoTasks = JiraIssuesHepler.GetTasksNeedMoreInfo(tasksWithNeededPu);
+                
+                tasksWithNeededPu = tasksWithNeededPu.Except(needMoreInfoTasks);
 
                 Console.WriteLine("Loading full information about subtasks...");
 
@@ -57,17 +61,15 @@ namespace SubtasksCreationTool
 
                 Console.WriteLine("Sending messages about updating PU and estimates...");
 
-                await issuesHandler.SendCommentsAboutUpdateEstimates(tasksWithNeededPu);
-
-                var needMoreInfoTasks = JiraIssuesHepler.GetTasksNeedMoreInfo(tasksWithNeededPu);
-
+                // await issuesHandler.SendCommentsAboutUpdateEstimates(tasksWithNeededPu);
+                
                 var correctTasks = JiraIssuesHepler.ExcludeTasksWithSubtasks(tasksWithNeededPu);
-
-                correctTasks = correctTasks.Except(needMoreInfoTasks);
 
                 var correctTasksWithTypeOfSubtasksToCreate = issuesHandler.GetTypeOfSubtasksToCreate(correctTasks);
 
                 Console.WriteLine("Creating subtasks...");
+
+                correctTasksWithTypeOfSubtasksToCreate = correctTasksWithTypeOfSubtasksToCreate.Where(issue => issue.Issue.Key != "PROC-173422");
 
                 await issuesHandler.CreateSubtasks(correctTasksWithTypeOfSubtasksToCreate);
 

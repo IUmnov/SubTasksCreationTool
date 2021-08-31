@@ -55,6 +55,8 @@ namespace SubtasksCreationTool
                     continue;
                 }
 
+                Console.WriteLine(issue.Key);
+
                 string mainTaskSummary = issue.Fields.Summary;
                 string projectKey = issue.Fields.Project.Key;
                 string issueKey = issue.Key;
@@ -158,7 +160,7 @@ namespace SubtasksCreationTool
                 var existingDevSubtasks = issue.Fields.Subtasks.Where(i => i.Fields.IssueType.Name == TaskType);
                 if (existingDevSubtasks.Any())
                 {
-                    int sumEstimate = existingDevSubtasks.Select(s => s.Fields.TimeTracking.OriginalEstimateSeconds)
+                    int sumEstimate = existingDevSubtasks.Select(s => s.Fields.TimeTracking.RemainingEstimateSeconds)
                         .Sum();
                     if (sumEstimate != (int) Math.Truncate(issue.Fields.DevPreliminaryUnits.Value * HoursInPu * 3600))
                     {
@@ -174,7 +176,7 @@ namespace SubtasksCreationTool
                 var existingQaSubtasks = issue.Fields.Subtasks.Where(i => i.Fields.IssueType.Name == QaSubTaskType);
                 if (existingQaSubtasks.Any())
                 {
-                    int sumEstimate = existingQaSubtasks.Select(s => s.Fields.TimeTracking.OriginalEstimateSeconds)
+                    int sumEstimate = existingQaSubtasks.Select(s => s.Fields.TimeTracking.RemainingEstimateSeconds)
                         .Sum();
                     if (sumEstimate != (int) Math.Truncate(issue.Fields.QaPreliminaryUnits.Value * HoursInPu * 3600))
                     {
